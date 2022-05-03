@@ -1,1 +1,1 @@
-# usaco_prac
+# USACO Practice with usaco.guide
