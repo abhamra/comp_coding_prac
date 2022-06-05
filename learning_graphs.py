@@ -132,23 +132,25 @@ def largestComponent(graph) -> int:
     visited = set()
 
     for key in keys:
-        val = explore(graph, key, visited)
+        val = exploreSize(graph, key, visited)
         if val>max:
             max = val
 
-    return val
+    return max
 
-def explore(graph, curr, visited) -> int:
-    count = 1
+def exploreSize(graph, curr, visited) -> int:
+
+    if curr in visited: #base case
+        return 0 #don't want to double count nodes
     
-    if curr not in visited:
-        visited.add(curr)
-        count+=1
-        for neighbor in graph[curr]:
-            explore(graph, neighbor, visited) #this is the depth first traversal
+    visited.add(curr) #if not in visited (passes the above check), then add to visited to prevent cyclic behavior
+
+    count = 1
+
+    for neighbor in graph[curr]:
+        count+=exploreSize(graph, neighbor, visited) #size accumulates the count of all of the connected nodes (keeps adding the 1)
 
     return count
-
 
 largest_comp_graph = {
     0: [8, 1, 5],
@@ -160,4 +162,36 @@ largest_comp_graph = {
     8: [0, 5]
 }
 
-print(largestComponent(largest_comp_graph))
+#print(largestComponent(largest_comp_graph))
+#print(largestComponent(connected_component_graph))
+
+def shortestPath(graph, src, dest) -> int:
+    visited = set() #need to check if node was visited
+    queue = deque() #use popleft!!
+    queue.append([src, 0])
+    visited.add(src)
+
+    if src == dest:
+        return 0
+
+    while len(queue)>0:
+        curr = queue.popleft()
+
+        if curr[0] == dest:
+            return curr[1]
+        
+        for neighbor in graph[curr[0]]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append([neighbor, curr[1]+1])
+        
+
+shortest_path_graph = {
+    "v": ["w", "z"],
+    "w": ["x", "v"],
+    "x": ["y"],
+    "y": ["z"], 
+    "z": ["v", "y"]
+}
+
+print(shortestPath(shortest_path_graph, "w", "z"))
